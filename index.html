@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Amponsem Analytics — E‑Commerce Dashboard</title>
+  <style>
+    :root{
+      --brand:#0b57d0;
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --radius:14px;
+      --shadow:0 10px 25px rgba(0,0,0,.08);
+      --frame-height:900px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:linear-gradient(180deg,#fbfdff,#f6f7fb);
+      min-height:100vh;
+    }
+    header{
+      background:var(--brand);
+      color:white;
+      padding:20px 28px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      box-shadow:var(--shadow);
+    }
+    header .title{
+      display:flex;align-items:center;gap:12px
+    }
+    header .logo{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:44px;height:44px;border-radius:10px;background:white;color:var(--brand);
+      font-size:24px;font-weight:800;
+    }
+    h1{margin:0;font-size:26px;letter-spacing:.3px}
+    .badge{background:rgba(255,255,255,.18);padding:8px 12px;border-radius:999px;}
+    main{max-width:1200px;margin:28px auto;padding:0 20px}
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .meta{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:18px
+    }
+    .meta .pill{background:#fff;border:1px solid #e6e8ee;border-radius:12px;padding:12px 14px}
+    .meta .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .meta .value{font-weight:600;margin-top:4px}
+    iframe{
+      width:100%;
+      height:var(--frame-height);
+      border:0;
+      border-radius:12px;
+      background:#f0f2f7;
+    }
+    footer{
+      text-align:center;color:var(--muted);font-size:12px;margin:24px 0 40px
+    }
+    .note{margin-top:12px;color:var(--muted)}
+    .btn{
+      display:inline-block;margin-top:8px;background:var(--brand);color:#fff;
+      padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:600
+    }
+    @media (max-width:640px){
+      :root{--frame-height:780px}
+      header{padding:16px 18px}
+      h1{font-size:22px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">
+      <div class="logo">A</div>
+      <h1>Amponsem Analytics Portal</h1>
+    </div>
+    <div class="badge">📊 Powered by GoodData Cloud</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="meta">
+        <div class="pill">
+          <div class="label">Workspace</div>
+          <div class="value">E‑Commerce Analytics</div>
+        </div>
+        <div class="pill">
+          <div class="label">Dashboard</div>
+          <div class="value">E‑Commerce Dashboard</div>
+        </div>
+        <div class="pill">
+          <div class="label">Status</div>
+          <div class="value">✅ Ready</div>
+        </div>
+      </div>
+
+      <!-- Embed URL built from your GoodData Host, Workspace ID and Dashboard ID -->
+      <iframe
+        title="GoodData Dashboard"
+        src="https://thick-fly.trial.cloud.gooddata.com/dashboards/embedded/#/workspace/55799e12beb844c5943b5f7e5d320d72/dashboard/d749af0c-be3b-4baa-a39f-bedad19723d0?showNavigation=true"
+        allow="clipboard-read; clipboard-write">
+      </iframe>
+
+      <p class="note">
+        Tip: If this frame doesn’t load, make sure you’re logged in to GoodData in another tab and that your GoodData
+        org allows this site’s origin in <strong>CORS</strong> and <strong>CSP → frame-ancestors</strong>.
+      </p>
+
+      <a class="btn" target="_blank"
+         href="https://thick-fly.trial.cloud.gooddata.com/dashboards/embedded/#/workspace/55799e12beb844c5943b5f7e5d320d72/dashboard/d749af0c-be3b-4baa-a39f-bedad19723d0">
+        Open full screen
+      </a>
+    </section>
+  </main>
+
+  <footer>© 2025 Amponsem Analytics</footer>
+</body>
+</html>
