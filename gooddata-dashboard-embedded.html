@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Analytics Dashboard - GoodData Embedded</title>
+  <meta name="description" content="Interactive E-Commerce Analytics Dashboard powered by GoodData Cloud">
+  <style>
+    :root {
+      --primary: #0b57d0;
+      --primary-dark: #084298;
+      --secondary: #6366f1;
+      --background: #f8fafc;
+      --card-bg: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
+      --frame-height: 850px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text-primary);
+      background: linear-gradient(180deg, #ffffff 0%, var(--background) 100%);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 24px 32px;
+      box-shadow: var(--shadow-lg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: white;
+      color: var(--primary);
+      font-size: 24px;
+      font-weight: 800;
+      box-shadow: var(--shadow-md);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header-badge {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Main Content */
+    main {
+      max-width: 1400px;
+      margin: 32px auto;
+      padding: 0 32px;
+    }
+
+    .intro-section {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .intro-section h2 {
+      font-size: 20px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .intro-section p {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    /* Card Styles */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+    }
+
+    /* Status Banner */
+    .status-banner {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      border-left: 4px solid var(--success);
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-banner strong {
+      color: #065f46;
+      font-size: 16px;
+    }
+
+    /* Metadata Grid */
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metadata-item {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .metadata-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .metadata-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .metadata-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+
+    /* Dashboard Container */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .dashboard-header h3 {
+      font-size: 20px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fullscreen-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fullscreen-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .dashboard-frame-container {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px var(--border);
+      background: #f0f2f7;
+    }
+
+    iframe {
+      width: 100%;
+      height: var(--frame-height);
+      border: 0;
+      display: block;
+    }
+
+    .dashboard-note {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      border-radius: var(--radius);
+      font-size: 14px;
+      color: #92400e;
+    }
+
+    .dashboard-note strong {
+      color: #78350f;
+    }
+
+    /* Features Section */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .feature-card {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .feature-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Technical Info Section */
+    .technical-info {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-left: 4px solid var(--primary);
+    }
+
+    .technical-info h3 {
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .technical-info ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .technical-info li {
+      padding: 8px 0;
+      color: var(--text-primary);
+      font-size: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .technical-info li::before {
+      content: "✓";
+      color: var(--primary);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      :root {
+        --frame-height: 700px;
+      }
+
+      header {
+        padding: 20px 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      main {
+        padding: 0 20px;
+        margin: 24px auto;
+      }
+
+      .header-content {
+        justify-content: center;
+        text-align: center;
+      }
+
+      .metadata-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      :root {
+        --frame-height: 600px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="header-title">
+        <div class="logo">📊</div>
+        <h1>E-Commerce Analytics Dashboard</h1>
+      </div>
+      <div class="header-badge">
+        <span>⚡</span>
+        <span>Powered by GoodData Cloud</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Introduction -->
+    <section class="intro-section">
+      <h2>Interactive Business Intelligence Dashboard</h2>
+      <p>Real-time insights into e-commerce performance, customer behavior, and product analytics</p>
+    </section>
+
+    <!-- Status Banner -->
+    <div class="status-banner">
+      <span style="font-size: 20px;">✅</span>
+      <strong>Dashboard Successfully Embedded</strong>
+    </div>
+
+    <!-- Dashboard Metadata -->
+    <div class="card">
+      <div class="metadata-grid">
+        <div class="metadata-item">
+          <div class="metadata-label">Workspace</div>
+          <div class="metadata-value">E-Commerce Analytics</div>
+        </div>
+        <div class="metadata-item">
+          <div class="metadata-label">Dashboard</div>
+          <div class="metadata-value">E-Commerce Dashboard</div>
+        </div>
+        <div class="metadata-item">
+          <div class="metadata-label">Workspace ID</div>
+          <div class="metadata-value">55799e12beb844c5943b5f7e5d320d72</div>
+        </div>
+        <div class="metadata-item">
+          <div class="metadata-label">Dashboard ID</div>
+          <div class="metadata-value">d749af0c-be3b-4baa-a39f-bedad19723d0</div>
+        </div>
+        <div class="metadata-item">
+          <div class="metadata-label">GoodData Host</div>
+          <div class="metadata-value">thick-fly.trial.cloud.gooddata.com</div>
+        </div>
+        <div class="metadata-item">
+          <div class="metadata-label">Status</div>
+          <div class="metadata-value" style="color: var(--success);">✓ Live & Ready</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Embed -->
+    <div class="card">
+      <div class="dashboard-header">
+        <h3>
+          <span>📈</span>
+          <span>Live Dashboard</span>
+        </h3>
+        <a class="fullscreen-btn" 
+           href="https://thick-fly.trial.cloud.gooddata.com/dashboards/embedded/#/workspace/55799e12beb844c5943b5f7e5d320d72/dashboard/d749af0c-be3b-4baa-a39f-bedad19723d0"
+           target="_blank"
+           rel="noopener noreferrer">
+          <span>🔍</span>
+          <span>Open Full Screen</span>
+        </a>
+      </div>
+
+      <div class="dashboard-frame-container">
+        <iframe
+          title="GoodData E-Commerce Dashboard"
+          src="https://thick-fly.trial.cloud.gooddata.com/dashboards/embedded/#/workspace/55799e12beb844c5943b5f7e5d320d72/dashboard/d749af0c-be3b-4baa-a39f-bedad19723d0?showNavigation=true"
+          allow="clipboard-read; clipboard-write"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="dashboard-note">
+        <strong>⚠️ Authentication Required:</strong> To view this dashboard, you must be logged into GoodData 
+        (<a href="https://thick-fly.trial.cloud.gooddata.com" target="_blank" style="color: #92400e; text-decoration: underline;">thick-fly.trial.cloud.gooddata.com</a>) 
+        in another browser tab and have access to the E-Commerce Analytics workspace.
+      </div>
+    </div>
+
+    <!-- Dashboard Features -->
+    <div class="card">
+      <h3 style="margin-bottom: 20px; font-size: 20px; color: var(--text-primary);">
+        📊 Dashboard Features & Insights
+      </h3>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <div class="feature-title">Revenue by Category</div>
+          <div class="feature-description">
+            Visualizes total revenue breakdown across product categories including Electronics, Furniture, and Accessories
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <div class="feature-title">Customer List</div>
+          <div class="feature-description">
+            Displays comprehensive customer information organized by country, showing customer names and geographic distribution
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <div class="feature-title">Top Products by Quantity</div>
+          <div class="feature-description">
+            Highlights best-selling products ranked by quantity sold, including items like Desk Lamp, Keyboard, and Laptop Pro
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical Implementation -->
+    <div class="card technical-info">
+      <h3>🔧 Technical Implementation Details</h3>
+      <ul>
+        <li><strong>Embedding Method:</strong> GoodData official iframe embed with proper authentication</li>
+        <li><strong>CORS Configuration:</strong> Configured for localhost (8000, 8501) and GitHub Pages deployment</li>
+        <li><strong>CSP frame-ancestors:</strong> Properly set to allow embedding from approved origins</li>
+        <li><strong>Data Source:</strong> PostgreSQL database hosted on Supabase (cloud)</li>
+        <li><strong>Deployment:</strong> Available locally and online via GitHub Pages</li>
+        <li><strong>Responsive Design:</strong> Fully optimized for desktop, tablet, and mobile viewing</li>
+        <li><strong>Security:</strong> Only workspace members with proper GoodData authentication can view dashboard content</li>
+      </ul>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      E-Commerce Analytics Dashboard | 
+      Built with <a href="https://www.gooddata.com" target="_blank">GoodData Cloud</a> | 
+      © 2024
+    </p>
+    <p style="margin-top: 8px; font-size: 13px;">
+      This dashboard demonstrates embedded analytics capabilities using GoodData's official embedding SDK
+    </p>
+  </footer>
+</body>
+</html>
